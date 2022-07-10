@@ -1,0 +1,28 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<h3>Witam Witam</h3>
+
+<h3>Pieski</h3>
+{% for dog in dogs %}
+<p>{{dog.name}} - {{dog.race}} - {{dog.owner.username}}</p>
+{% endfor %}
+<hr>
+
+<h3>Wystawy</h3>
+{% for show in shows %}
+    <p>{{show.id}} - {{show.name}} - {{show.date}}</p>
+    <p>PIESKI:</p>
+    {% for dog in show_dogs %}
+        <p>{{dog.name}}</p>
+    {% endfor %}
+{% endfor %}
+<hr>
+
+<h3>Punktacja</h3>
+{% for score in scores %}
+
+{% endfor %}
+<hr>
+
+{% endblock %}
