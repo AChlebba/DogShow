@@ -7,8 +7,16 @@ def home(request):
     show_dogs = showw.dogs.all()
     dogs = Dog.objects.all()
     scores = Score.objects.all()
-
-    context = {'shows': shows, 'dogs': dogs, 'scores': scores, 'show_dogs': show_dogs }
+    page = 'home'
+    context = {'shows': shows, 'dogs': dogs, 'scores': scores, 'show_dogs': show_dogs, 'page': page,}
    
     return render(request, 'base/home.html', context)
+
+def shows(request):
+    shows = Show.objects.all()
+    page = 'shows'
+    context = {
+        "shows": shows, "page": page,
+    }
+    return render(request, 'base/shows.html', context)
 

@@ -1,0 +1,23 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<p class="h3 text-center">SHOWS {{page}}</p>
+
+
+<div class="d-grid gap-3">
+    {% for show in shows %}
+    <div class="card mx-auto" style="width: 50%;">
+        <div class="card-body">
+        <h5 class="card-title">{{show.name}}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">{{show.date}}</h6>
+        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+        <a href="#" class="card-link">Card link</a>
+        <a href="#" class="card-link">Another link</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<hr>
+
+{% endblock %}
