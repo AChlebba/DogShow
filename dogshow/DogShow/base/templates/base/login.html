@@ -1,0 +1,18 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<div class="p-2 bg-secondary bg-opacity-10 border border-secondary border-opacity-50 rounded mx-auto" style="width: 30%;">
+<form class="form" action="" method="POST">{% csrf_token %}
+    <div class="mb-3">{{message}}</div>
+    <div class="mb-3">
+      <label for="InputUsername" class="form-label">Username</label>
+      <input type="text" class="form-control" id="username" name="username" placeholder="username...">
+    </div>
+    <div class="mb-3">
+      <label for="InputPassword" class="form-label">Password</label>
+      <input type="password" class="form-control" id="password" name="password" placeholder="password...">
+    </div>
+    <button type="submit" class="btn btn-primary">Login</button>
+  </form>
+</div>
+{% endblock content %}

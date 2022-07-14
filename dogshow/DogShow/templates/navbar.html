@@ -12,7 +12,7 @@
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         {% if page == 'home' %}
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
+            <a class="nav-link active rounded" style="background-color: #f1f1f1;" aria-current="page" href="{% url 'home' %}">Home</a>
           </li>
         {% else %}
           <li class="nav-item">
@@ -21,7 +21,7 @@
         {% endif %}
         {% if page == 'shows' %}
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{% url 'shows' %}">Shows</a>
+            <a class="nav-link active rounded" style="background-color: #f1f1f1;" aria-current="page" href="{% url 'shows' %}">Shows</a>
           </li>
         {% else %}
           <li class="nav-item">
@@ -30,9 +30,24 @@
         {% endif %}
         </ul>
         <ul class="nav justify-content-end">
-            <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Profile</a>
+          {% if user.is_authenticated %}
+            {% if page == 'user-profile' %}
+              <li class="nav-item">
+                <a class="nav-link rounded" style="background-color: #f1f1f1;" href="{% url 'user-profile' %}">Profile</a>
               </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'user-profile' %}">Profile</a>
+            </li>
+            {% endif %}
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{% url 'logout' %}">Logut</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{% url 'login' %}">Login</a>
+            </li>
+          {% endif %}
         </ul>
       </div>
     </div>

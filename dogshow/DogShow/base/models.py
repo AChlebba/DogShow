@@ -14,6 +14,8 @@ class Dog(models.Model):
 class Show(models.Model):
     name = models.CharField(max_length=200, blank=False)
     date = models.DateTimeField(blank=False)
+    address = models.CharField(max_length=200, blank=False)
+    description = models.TextField()
     dogs = models.ManyToManyField(Dog, related_name='dogs', blank=True)
     referee1 = models.ForeignKey(User, related_name='referee1', on_delete=models.SET_NULL, null=True)
     referee2 = models.ForeignKey(User, related_name='referee2', on_delete=models.SET_NULL, null=True)

@@ -1,0 +1,24 @@
+
+{% extends 'main.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="p-2 bg-secondary bg-opacity-10 border border-secondary border-opacity-50 rounded mx-auto" style="width: 50%;">
+    <div class="card mx-auto" style="width: 90%;">
+        <img src="{% static 'img/dogshowdefault.jpg' %}" class="card-img-top" alt="..." >
+        <div class="card-body">
+          <h5 class="card-title">{{show.name}}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{show.date}}</h6>
+          <h6 class="card-subtitle mb-2 text-muted">{{show.address}}</h6>
+          <p class="card-text">{{show.description}}</p>
+          <p>PIESKI:</p>
+            {% for dog in show_dogs %}
+                <p>{{dog.name}}</p>
+            {% endfor %}
+          <a href="#" class="btn btn-success ">Add your dog !</a>
+        </div>
+      </div>
+</div>
+
+{% endblock content %}

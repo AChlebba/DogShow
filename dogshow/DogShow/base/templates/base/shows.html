@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<p class="h3 text-center">SHOWS {{page}}</p>
+<p class="h3 text-center">SHOWS</p>
 
 
 <div class="d-grid gap-3">
@@ -12,7 +12,7 @@
         <h5 class="card-title">{{show.name}}</h5>
         <h6 class="card-subtitle mb-2 text-muted">{{show.date}}</h6>
         <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        <a href="#" class="card-link">Card link</a>
+        <a href="{% url 'shows-details' show.id %}" class="card-link">Details</a>
         <a href="#" class="card-link">Another link</a>
         </div>
     </div>
@@ -20,4 +20,4 @@
 </div>
 <hr>
 
-{% endblock %}
+{% endblock content %}
