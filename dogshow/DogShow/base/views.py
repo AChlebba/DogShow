@@ -1,9 +1,11 @@
+from tkinter import E
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from .models import Dog, Show, Score
+from .forms import DogForm
 
 def home(request):
     shows = Show.objects.all()
@@ -35,7 +37,7 @@ def showsDetails(request, pk):
 
 def loginUser(request):
     page = 'login'
-    message = 'git'
+    message = ''
     if request.user.is_authenticated:
         return redirect('home')
     if request.method == 'POST':
@@ -58,12 +60,92 @@ def logoutUser(request):
     logout(request)
     return redirect('home')
 
+def registerUser(request):
+    message = ''
+    form = UserCreationForm
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('home')
+        else:
+            message = 'Something wnet wrong :/'
+    context = {
+        "form": form, "message": message,
+    }
+    return render(request, 'base/register.html', context)
+
 def userProfile(request):
     page = 'user-profile'
+    dogs = Dog.objects.all()
     context = {
-        "page": page,
+        "page": page, "dogs":dogs,
     }
     return render(request, 'base/user_profile.html', context)
+
+def newDog(request):
+    message = ''
+    form = DogForm
+    if request.method == 'POST':
+        form = DogForm(request.POST)
+        if form.is_valid():
+            dog = form.save(commit=False)
+            dog.owner = request.user
+            dog.save()
+            return redirect('user-profile')
+        else:
+            message = 'Date in format year-month-day (2001-01-01)'
+    context = {
+        "form": form, "message": message,
+    }
+    return render(request, 'base/new_dog.html', context)
+
+def deleteDog(request, pk):
+    dog = Dog.objects.get(id=pk)
+    if request.user == dog.owner:
+        dog.delete()
+        page = 'user-profile'
+        dogs = Dog.objects.all()
+        return redirect('user-profile')
+    else:
+        message = 'jakas lipa wyszla'
+
+def dogProfile(request, pk):
+    dog = Dog.objects.get(id=pk)
+    context = {
+        "dog": dog
+        }
+    return render(request, 'base/dog_profile.html', context)
+
+def submitDog(request, pk):
+    message = ''
+    dogs = Dog.objects.all()
+    show = Show.objects.get(id=pk)
+    show_dogs = show.dogs.all()
+    if request.method == 'POST':
+        try:
+            dog = request.POST.get('selected-dog')
+            show.dogs.add(dog)
+            return redirect('shows')
+        except:
+            message = 'Choose a dog'
+
+    context = {
+        "message": message, "dogs": dogs, "show": show, "show_dogs": show_dogs,
+    }
+    return render(request, 'base/submit_dog.html', context)
+
+def cancelDog(request, pk, dpk):
+    dog = Dog.objects.get(id=dpk)
+    show = Show.objects.get(id=pk)
+    
+    if request.user == dog.owner:
+        show.dogs.remove(dog)
+        return redirect('shows')
+    else:
+        message = 'jakas lipa wyszla'
+
 
 
 

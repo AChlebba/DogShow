@@ -14,9 +14,13 @@
           <p class="card-text">{{show.description}}</p>
           <p>PIESKI:</p>
             {% for dog in show_dogs %}
-                <p>{{dog.name}}</p>
+                {% if user == dog.owner %}
+                <p>{{dog.name}} - <a href="{% url 'dog-profile' dog.id %}">Details</a> - <a href="{% url 'cancel-dog' show.id dog.id %}">Delete</a></p>
+                {% else %}
+                <p>{{dog.name}} - <a href="{% url 'dog-profile' dog.id %}">Details</a></p>
+                {% endif %}
             {% endfor %}
-          <a href="#" class="btn btn-success ">Add your dog !</a>
+          <a href="{% url 'submit-dog' show.id %}" class="btn btn-success ">Add your dog !</a>
         </div>
       </div>
 </div>

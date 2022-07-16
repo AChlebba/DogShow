@@ -1,0 +1,16 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h3>Dog profile</h3>
+
+<P>Avatar</P>
+<p>{{dog}}</p>
+<p>Bio</p>
+{{dog.id}} - {{dog.name}} - {{dog.owner}} - {{dog.race}} - {{dog.birthday}}
+<p>Posiadane tytuły:</p>
+        
+<hr>
+
+
+{% endblock content %}

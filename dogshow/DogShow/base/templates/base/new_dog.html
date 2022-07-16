@@ -1,0 +1,16 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<div class="p-2 bg-secondary bg-opacity-10 border border-secondary border-opacity-50 rounded mx-auto" style="width: 30%;">
+<form class="form" action="" method="POST">{% csrf_token %}
+    <p class="text-center">ADD DOG</p>
+    <p class="text-danger">{{message}}</p>
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <hr>
+    <div class="d-flex justify-content-center">
+      <a href="{% url 'user-profile' %}">Go back</a>
+    </div>
+  </form>
+</div>
+{% endblock content %}

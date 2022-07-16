@@ -1,0 +1,29 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<div class="p-2 bg-secondary bg-opacity-10 border border-secondary border-opacity-50 rounded mx-auto" style="width: 30%;">
+<form class="form" action="" method="POST">{% csrf_token %}
+    <p class="text-center">ADD YOUR DOG</p>
+    <p class="text-danger">{{message}}</p>
+    
+    <div class="input-group">
+        <select class="custom-select" id="selected-dog" name="selected-dog">
+          <option selected>Choose...</option>
+          {% for dog in dogs %}
+          {% if dog.owner == user and dog not in show_dogs %}
+          <option value="{{dog.id}}">{{dog.name}}</option>
+          {% endif %}
+          {% endfor %}
+        </select>
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" type="submit">Submit</button>
+        </div>
+    </div>
+
+    <hr>
+    <div class="d-flex justify-content-center">
+      <a href="{% url 'shows-details' show.id %}">Go back</a>
+    </div>
+  </form>
+</div>
+{% endblock content %}

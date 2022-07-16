@@ -2,6 +2,20 @@
 
 {% block content %}
 
-<h3>User profile {{page}}</h3>
+<h3>User profile</h3>
+
+<P>Avatar</P>
+<p>{{user}}</p>
+<p>Bio</p>
+<p>Posiadane pieski:</p>
+{% for dog in dogs %}
+    {% if dog.owner == user %}
+        {{dog.id}} - {{dog.name}} - {{dog.owner}} - {{dog.race}} - {{dog.birthday}} - <a href="{% url 'dog-profile' dog.id %}">Details</a> - <a href="{% url 'delete-dog' dog.id %}">Delete</a>
+        <hr>
+    {% endif %}
+{% endfor %}
+
+<a href="{% url 'new-dog' %}">Add Dog</a>
+
 
 {% endblock content %}
