@@ -1,4 +1,5 @@
 
+from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -20,9 +21,16 @@ class Show(models.Model):
     referee1 = models.ForeignKey(User, related_name='referee1', on_delete=models.SET_NULL, null=True)
     referee2 = models.ForeignKey(User, related_name='referee2', on_delete=models.SET_NULL, null=True)
     referee3 = models.ForeignKey(User, related_name='referee3', on_delete=models.SET_NULL, null=True)
-    
+
+    class Meta:
+        ordering = ['-date']
+
     def __str__(self):
         return self.name
+    
+    @property
+    def is_past(self):
+        return timezone.now() > self.date
 
 class Score(models.Model):
     show = models.ForeignKey(Show, on_delete=models.SET_NULL, null=True)

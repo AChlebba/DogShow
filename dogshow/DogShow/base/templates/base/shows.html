@@ -10,10 +10,28 @@
     <div class="card mx-auto" style="width: 50%;">
         <div class="card-body">
         <h5 class="card-title">{{show.name}}</h5>
+        {% if show.is_past %}
+        <h6 class="card-subtitle mb-2 text-muted">Show ended</h6>
+        {% else %}
         <h6 class="card-subtitle mb-2 text-muted">{{show.date}}</h6>
+        {% endif %}
         <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+        {% if show.is_past %}
+        <a href="{% url 'shows-details' show.id %}" class="card-link">See Results</a>
+        {% else %}
         <a href="{% url 'shows-details' show.id %}" class="card-link">Details</a>
         <a href="#" class="card-link">Another link</a>
+        {% for group in request.user.groups.all %}
+        {% if group.name == 'admin' %}
+        {% if show.referee1 != None and show.referee2 != None and show.referee3 != None %}
+        <a href="#" class="card-link">Git</a>
+        {% else %}
+        <a href="#" class="card-link">Brak</a>
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+
+        {% endif %}
         </div>
     </div>
     {% endfor %}

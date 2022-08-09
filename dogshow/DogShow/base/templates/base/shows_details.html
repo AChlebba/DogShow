@@ -4,6 +4,14 @@
 
 {% block content %}
 
+<style>
+    .referee-table{
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+</style>
+
 <div class="p-2 bg-secondary bg-opacity-10 border border-secondary border-opacity-50 rounded mx-auto" style="width: 50%;">
     <div class="card mx-auto" style="width: 90%;">
         <img src="{% static 'img/dogshowdefault.jpg' %}" class="card-img-top" alt="..." >
@@ -20,7 +28,21 @@
                 <p>{{dog.name}} - <a href="{% url 'dog-profile' dog.id %}">Details</a></p>
                 {% endif %}
             {% endfor %}
+            
           <a href="{% url 'submit-dog' show.id %}" class="btn btn-success ">Add your dog !</a>
+          <hr>
+          <div class="referee-table">
+          <p>{{show.referee1}}</p>
+          <p>{{show.referee2}}</p>
+          <p>{{show.referee3}}</p>
+          {% for group in request.user.groups.all %}
+          {% if group.name == 'admin' %}
+          <a href="{% url 'add-referee' show.id 1 %}" class="btn btn-success ">Add Referee1</a>
+          <a href="{% url 'add-referee' show.id 2 %}" class="btn btn-success ">Add Referee2</a>
+          <a href="{% url 'add-referee' show.id 3 %}" class="btn btn-success ">Add Referee3</a>
+          {% endif %}
+          {% endfor %}
+          </div>
         </div>
       </div>
 </div>

@@ -1,11 +1,12 @@
-from tkinter import E
+
+import re
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from .models import Dog, Show, Score
-from .forms import DogForm
+from .forms import DogForm, ShowForm
 
 def home(request):
     shows = Show.objects.all()
@@ -145,6 +146,54 @@ def cancelDog(request, pk, dpk):
         return redirect('shows')
     else:
         message = 'jakas lipa wyszla'
+
+
+def addShow(request):
+    page = 'add_show'
+    form = ShowForm
+    message = ''
+
+    if request.method == 'POST':
+        form = ShowForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('shows')
+        else:
+            message = 'Date in format year-month-day (2006-10-25 14:30)'
+
+    context = {
+        "page": page, "form": form, "message": message,
+    }
+    return render(request, 'base/add_show.html', context)
+
+
+def addReferee(request, pk, rpk):
+    show = Show.objects.get(id=pk)
+    referees = Group.objects.get(name='referee').user_set.all()
+    message = ''
+    referee_dict = {
+        "1": show.referee1, "2": show.referee2, "3": show.referee3,
+    }
+
+    if request.method == 'POST':
+        try:
+            referee = request.POST.get('selected-referee')
+            referee = User.objects.get(id=referee)
+            if rpk == '1':
+                show.referee1 = referee
+            if rpk == '2':
+                show.referee2 = referee
+            if rpk == '3':
+                show.referee3 = referee
+            show.save()
+            return redirect('shows')
+        except:
+            message = referee
+
+    context = {
+        "referees": referees, "show": show, "message": message,
+    }
+    return render(request, 'base/add_referee.html', context)
 
 
 

@@ -14,4 +14,6 @@ urlpatterns = [
     path('delete-dog/<str:pk>', views.deleteDog, name='delete-dog'),
     path('dog-profile/<str:pk>', views.dogProfile, name='dog-profile'),
     path('shows-details/<str:pk>', views.showsDetails, name='shows-details'),
+    path('add-show/', views.addShow, name='add-show'),
+    path('add-referee/<str:pk>/<str:rpk>', views.addReferee, name='add-referee'),
 ]
