@@ -16,4 +16,6 @@ urlpatterns = [
     path('shows-details/<str:pk>', views.showsDetails, name='shows-details'),
     path('add-show/', views.addShow, name='add-show'),
     path('add-referee/<str:pk>/<str:rpk>', views.addReferee, name='add-referee'),
+    path('activate-show/<str:pk>', views.activateShow, name='activate-show'),
+    path('score-page/<str:pk>/<str:dpk>', views.scorePage, name='score-page'),
 ]

@@ -1,0 +1,129 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<style>
+    .score-table{
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      justify-self: center;
+    }
+
+    .btn-table{
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      justify-self: center;
+    }
+
+    .cen {
+      justify-self: center;
+    }
+
+</style>
+
+<div class="p-2 bg-secondary bg-opacity-10 border border-secondary border-opacity-50 rounded mx-auto" style="width: 70%;">
+{{current_dog.name}}
+{{current_dog.race}}
+{{current_dog.bithday}}
+{{finished}}
+<div class="score-table">
+<div class="p-2 bg-secondary bg-opacity-10 border border-secondary border-opacity-50 rounded mx-auto" style="width: 80%;">
+<form class="form" action="" method="POST">{% csrf_token %}
+    <div class="form-group">
+      <label for="exampleFormControlSelect1">Head</label>
+      {% if score.submitted %}
+      <select class="form-control" id="head" name="head" disabled>
+        <option value="{{score.head}}">{{score.head}}</option>
+      </select>
+      {% else %}
+      <select class="form-control" id="head" name="head" >
+        {% for i in '0123456789'|make_list %}
+        <option value="{{i}}">{{i}}</option>
+        {% endfor %}
+      </select>
+      {% endif %}
+    </div>
+
+</div>
+<div class="p-2 bg-secondary bg-opacity-10 border border-secondary border-opacity-50 rounded mx-auto" style="width: 80%;">
+
+    <div class="form-group">
+      <label for="exampleFormControlSelect1">Body</label>
+      {% if score.submitted %}
+      <select class="form-control" id="body" name="body" disabled>
+        <option value="{{score.body}}">{{score.body}}</option>
+      </select>
+      {% else %}
+      <select class="form-control" id="body" name="body" >
+        {% for i in '0123456789'|make_list %}
+        <option value="{{i}}">{{i}}</option>
+        {% endfor %}
+      </select>
+      {% endif %}
+    </div>
+
+</div>
+<div class="p-2 bg-secondary bg-opacity-10 border border-secondary border-opacity-50 rounded mx-auto" style="width: 80%;">
+
+    <div class="form-group">
+      <label for="exampleFormControlSelect1">Legs</label>
+      {% if score.submitted %}
+      <select class="form-control" id="legs" name="legs" disabled>
+        <option value="{{score.legs}}">{{score.legs}}</option>
+      </select>
+      {% else %}
+      <select class="form-control" id="legs" name="legs" >
+        {% for i in '0123456789'|make_list %}
+        <option value="{{i}}">{{i}}</option>
+        {% endfor %}
+      </select>
+      {% endif %}
+    </div>
+
+</div>
+<div class="p-2 bg-secondary bg-opacity-10 border border-secondary border-opacity-50 rounded mx-auto" style="width: 80%;">
+
+    <div class="form-group">
+      <label for="exampleFormControlSelect1">Tail</label>
+      {% if score.submitted %}
+      <select class="form-control" id="tail" name="tail" disabled>
+        <option value="{{score.tail}}">{{score.tail}}</option>
+      </select>
+      {% else %}
+      <select class="form-control" id="tail" name="tail" >
+        {% for i in '0123456789'|make_list %}
+        <option value="{{i}}">{{i}}</option>
+        {% endfor %}
+      </select>
+      {% endif %}
+    </div>
+
+</div>
+</div>
+<hr>
+<div class="btn-table">
+
+{% if dpk == 0|slugify %}
+<div class="cen"><a class="btn btn-secondary ">Back</a></div>
+{% else %}
+<div class="cen"><a href="{% url 'score-page' show.id dpk|add:'-1' %}" class="btn btn-success ">Back</a></div>
+{% endif %}
+
+{% if finished %}
+<div class="cen"><button type="submit" class="btn btn-primary mb-2">Submit</button></div>
+{% else %}
+<div class="cen"><a href="{% url 'shows-details' show.id %}" class="btn btn-success ">Everything done ! Go back</a></div>
+{% endif %}
+
+{% if dpk == dogs_count|slugify %}
+<div class="cen"><a class="btn btn-secondary ">Next</a></div>
+{% else %}
+<div class="cen"><a href="{% url 'score-page' show.id dpk|add:'1' %}" class="btn btn-success ">Next</a></div>
+{% endif %}
+</div>
+</form>
+</div>
+
+
+
+{% endblock content %}

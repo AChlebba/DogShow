@@ -13,6 +13,7 @@
     <div class="input-group">
         <select class="custom-select" id="selected-referee" name="selected-referee">
           <option selected>Choose...</option>
+          <option value="---">---</option>
           {% for referee in referees %}
           {% if referee != show.referee1 and referee != show.referee2 and referee != show.referee3 %}
           <option value="{{referee.id}}">{{referee.username}}</option>

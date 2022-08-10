@@ -8,6 +8,11 @@
     .referee-table{
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
+      justify-self: center;
+    }
+
+    .cen {
+      justify-self: center;
     }
 
 </style>
@@ -28,8 +33,13 @@
                 <p>{{dog.name}} - <a href="{% url 'dog-profile' dog.id %}">Details</a></p>
                 {% endif %}
             {% endfor %}
-            
+          {% for group in request.user.groups.all %}
+          {% if group.name == 'referee' or show.active %}
+          <a class="btn btn-secondary " disabled>Add your dog !</a>
+          {% else %}
           <a href="{% url 'submit-dog' show.id %}" class="btn btn-success ">Add your dog !</a>
+          {% endif %}
+          {% endfor %}
           <hr>
           <div class="referee-table">
           <p>{{show.referee1}}</p>
@@ -37,13 +47,49 @@
           <p>{{show.referee3}}</p>
           {% for group in request.user.groups.all %}
           {% if group.name == 'admin' %}
-          <a href="{% url 'add-referee' show.id 1 %}" class="btn btn-success ">Add Referee1</a>
-          <a href="{% url 'add-referee' show.id 2 %}" class="btn btn-success ">Add Referee2</a>
-          <a href="{% url 'add-referee' show.id 3 %}" class="btn btn-success ">Add Referee3</a>
+          {% if show.active %}
+          <div class="cen"><a  class="btn btn-secondary " disabled>Add Referee1</a></div>
+          <div class="cen"><a  class="btn btn-secondary " disabled>Add Referee2</a></div>
+          <div class="cen"><a  class="btn btn-secondary " disabled>Add Referee3</a></div>
+          
+          </div>
+          <hr>
+          </div>
+          {% else %}
+          <div class="cen"><a href="{% url 'add-referee' show.id 1 %}" class="btn btn-primary ">Add Referee1</a></div>
+          <div class="cen"><a href="{% url 'add-referee' show.id 2 %}" class="btn btn-primary ">Add Referee2</a></div>
+          <div class="cen"><a href="{% url 'add-referee' show.id 3 %}" class="btn btn-primary ">Add Referee3</a></div>
+          
+          </div>
+          <hr>
+          </div>
+          {% endif %}
+          
+          {% if show.active %}
+          <a href="{% url 'activate-show' show.id %}" class="btn btn-success btn-block">Active !</a>
+          {% else %}
+          {% if show.referee1 != None and show.referee2 != None and show.referee3 != None %}
+          <a href="{% url 'activate-show' show.id %}" class="btn btn-primary btn-block">Activate</a>
+          {% else %}
+          <a class="btn btn-danger btn-block">Referees not ready</a>
+          {% endif %}
+          {% endif %}
           {% endif %}
           {% endfor %}
+
+          {% for group in request.user.groups.all %}
+          {% if group.name == 'referee' %}
           </div>
-        </div>
+          <hr>
+          </div>
+          {% if show.active %}
+          <a href="{% url 'score-page' show.id 0 %}" class="btn btn-success btn-block">Start judging !</a>
+          {% else %}
+          <a  class="btn btn-secondary btn-block" disabled>Show not ready</a>
+          {% endif %}
+          {% endif %}
+          {% endfor %}
+          <p></p>
       </div>
 </div>
 

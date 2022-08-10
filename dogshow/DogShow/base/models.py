@@ -21,6 +21,8 @@ class Show(models.Model):
     referee1 = models.ForeignKey(User, related_name='referee1', on_delete=models.SET_NULL, null=True)
     referee2 = models.ForeignKey(User, related_name='referee2', on_delete=models.SET_NULL, null=True)
     referee3 = models.ForeignKey(User, related_name='referee3', on_delete=models.SET_NULL, null=True)
+    active = models.BooleanField(default=False)
+    finished = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-date']
@@ -33,6 +35,7 @@ class Show(models.Model):
         return timezone.now() > self.date
 
 class Score(models.Model):
+    name = models.CharField(max_length=200, blank=False)
     show = models.ForeignKey(Show, on_delete=models.SET_NULL, null=True)
     dog = models.ForeignKey(Dog, on_delete=models.SET_NULL, null=True)
     referee = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -40,3 +43,7 @@ class Score(models.Model):
     body = models.IntegerField(default=0)
     legs = models.IntegerField(default=0)
     tail = models.IntegerField(default=0)
+    submitted = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name

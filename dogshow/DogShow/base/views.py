@@ -171,22 +171,29 @@ def addReferee(request, pk, rpk):
     show = Show.objects.get(id=pk)
     referees = Group.objects.get(name='referee').user_set.all()
     message = ''
-    referee_dict = {
-        "1": show.referee1, "2": show.referee2, "3": show.referee3,
-    }
 
     if request.method == 'POST':
         try:
             referee = request.POST.get('selected-referee')
-            referee = User.objects.get(id=referee)
-            if rpk == '1':
-                show.referee1 = referee
-            if rpk == '2':
-                show.referee2 = referee
-            if rpk == '3':
-                show.referee3 = referee
-            show.save()
-            return redirect('shows')
+            if referee == '---':
+                if rpk == '1':
+                    show.referee1 = None
+                if rpk == '2':
+                    show.referee2 = None
+                if rpk == '3':
+                    show.referee3 = None
+                show.save()
+                return redirect('shows')
+            else:
+                referee = User.objects.get(id=referee)
+                if rpk == '1':
+                    show.referee1 = referee
+                if rpk == '2':
+                    show.referee2 = referee
+                if rpk == '3':
+                    show.referee3 = referee
+                show.save()
+                return redirect('shows')
         except:
             message = referee
 
@@ -196,5 +203,68 @@ def addReferee(request, pk, rpk):
     return render(request, 'base/add_referee.html', context)
 
 
+def activateShow(request, pk):
+    current_show = Show.objects.get(id=pk)
+    if current_show.active:
+        current_show.active = False
+        current_show.save()
+        return redirect('shows')
+    else:
+        for dog in current_show.dogs.all():
+            score = Score.objects.create(
+                name = current_show.name + ' ' + current_show.referee1.username + ' ' + dog.name,
+                show = current_show,
+                referee = current_show.referee1,
+                dog = dog)
+            score.save()
+        for dog in current_show.dogs.all():
+            score = Score.objects.create(
+                name = current_show.name + ' ' + current_show.referee2.username + ' ' + dog.name,
+                show = current_show,
+                referee = current_show.referee2,
+                dog = dog)
+            score.save()
+        for dog in current_show.dogs.all():
+            score = Score.objects.create(
+                name = current_show.name + ' ' + current_show.referee3.username + ' ' + dog.name,
+                show = current_show,
+                referee = current_show.referee3,
+                dog = dog)
+            score.save()
 
+        current_show.active = True
+        current_show.save()
+        return redirect('shows')
+
+
+def scorePage(request, pk, dpk):
+    show = Show.objects.get(id=pk)
+    dogs = show.dogs.all()
+    scores = Score.objects.all()
+    dogs_count = len(dogs)-1
+    finished = False
+    if int(dpk) not in range(dogs_count+1):
+        dpk = 0
+
+    for i, dog in enumerate(dogs):
+        if i == int(dpk):
+            current_dog = dog
+            break
+    score = scores.get(show=show, dog=dog, referee=request.user)
+    
+
+
+    if request.method == 'POST':
+        score.head = request.POST.get('head')
+        score.body = request.POST.get('body')
+        score.legs = request.POST.get('legs')
+        score.tail = request.POST.get('tail')
+        score.submitted = True
+        score.save()
+        finished = scores.get(show=show, referee=request.user, submitted=False).exists()
+
+    context = {
+        "show": show, "current_dog": current_dog, "score": score, "dogs_count": dogs_count, "dpk": dpk, "finished": finished,
+    }
+    return render(request, 'base/score_page.html', context)
 
