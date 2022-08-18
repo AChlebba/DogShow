@@ -25,7 +25,7 @@
 {{current_dog.name}}
 {{current_dog.race}}
 {{current_dog.bithday}}
-{{finished}}
+{{not_finished}}
 <div class="score-table">
 <div class="p-2 bg-secondary bg-opacity-10 border border-secondary border-opacity-50 rounded mx-auto" style="width: 80%;">
 <form class="form" action="" method="POST">{% csrf_token %}
@@ -109,8 +109,12 @@
 <div class="cen"><a href="{% url 'score-page' show.id dpk|add:'-1' %}" class="btn btn-success ">Back</a></div>
 {% endif %}
 
-{% if finished %}
-<div class="cen"><button type="submit" class="btn btn-primary mb-2">Submit</button></div>
+{% if not_finished %}
+  {% if score.submitted %}
+  <div class="cen"><a class="btn btn-secondary ">Submitted</a></div>
+  {% else %}
+  <div class="cen"><button type="submit" class="btn btn-primary mb-2">Submit</button></div>
+  {% endif %}
 {% else %}
 <div class="cen"><a href="{% url 'shows-details' show.id %}" class="btn btn-success ">Everything done ! Go back</a></div>
 {% endif %}
