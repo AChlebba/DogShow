@@ -4,9 +4,14 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Dog(models.Model):
+    MALE = 'Male'
+    FAMALE = 'Female'
+    SEXES = [(MALE,'Male'), (FAMALE,'Female'),]
     name = models.CharField(max_length=100, blank=False)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     race = models.CharField(max_length=100, null=True)
+    sex = models.CharField(max_length=6, choices=SEXES, default=MALE)
+    color = models.CharField(max_length=100, default='color')
     birthday = models.DateField(null=True)
 
     def __str__(self):
@@ -33,6 +38,13 @@ class Show(models.Model):
     @property
     def is_past(self):
         return timezone.now() > self.date
+
+    @property
+    def dogs_ready(self):
+        if self.dogs.all().count() >= 3:
+            return True
+        else:
+            return False
 
 class Score(models.Model):
     name = models.CharField(max_length=200, blank=False)

@@ -9,11 +9,25 @@
     <div class="input-group">
         <select class="custom-select" id="selected-dog" name="selected-dog">
           <option selected>Choose...</option>
-          {% for dog in dogs %}
-          {% if dog.owner == user and dog not in show_dogs %}
-          <option value="{{dog.id}}">{{dog.name}}</option>
+
+          {% for group in request.user.groups.all %}
+          {% if group.name == 'admin' %}
+            {% for dog in dogs %}
+            {% if dog not in show_dogs %}
+            <option value="{{dog.id}}">{{dog.name}}</option>
+            {% endif %}
+            {% endfor %}
           {% endif %}
           {% endfor %}
+
+          {% if not request.user.groups.all %}
+          {% for dog in dogs %}
+            {% if dog not in show_dogs and dog.owner == request.user %}
+            <option value="{{dog.id}}">{{dog.name}}</option>
+            {% endif %}
+          {% endfor %}
+          {% endif %}
+
         </select>
         <div class="input-group-append">
           <button class="btn btn-outline-secondary" type="submit">Submit</button>

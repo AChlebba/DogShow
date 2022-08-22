@@ -1,0 +1,37 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<style>
+.space { margin:0; padding:0; height:30px; } 
+</style>
+
+
+
+<div class="container bg-secondary rounded" style="width: 50%;">
+<div class="space"></div>
+<div class="jumbotron bg-secondary rounded mx-auto" style="width: 95%;">
+{% for referee in referees %}
+<div>
+     <p class="p-3 mb-2 bg-white text-dark rounded">{{referee.username}} - 
+        {% for group in referee.groups.all %}
+        {% if group.name == 'referee' %}
+        <a href="#" class="link-warning">Referee</a></p>
+        {% endif %}
+        {% endfor %}
+
+        {% for group in referee.groups.all %}
+        {% if group.name == 'admin' %}
+        <a href="#" class="link-danger">Admin</a></p>
+        {% endif %}
+        {% endfor %}
+
+        {% if not referee.groups.all %}
+        <a href="#" >Just User</a></p>
+        {% endif %}
+</div>
+{% endfor %}
+<div class="space"></div>
+</div>
+</div>
+{% endblock content %}

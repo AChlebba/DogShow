@@ -1,21 +1,46 @@
 {% extends 'main.html' %}
+{% load static %}
 
 {% block content %}
 
-<h3>User profile</h3>
 
-<P>Avatar</P>
-<p>{{user}}</p>
-<p>Bio</p>
-<p>Posiadane pieski:</p>
-{% for dog in dogs %}
-    {% if dog.owner == user %}
-        {{dog.id}} - {{dog.name}} - {{dog.owner}} - {{dog.race}} - {{dog.birthday}} - <a href="{% url 'dog-profile' dog.id %}">Details</a> - <a href="{% url 'delete-dog' dog.id %}">Delete</a>
-        <hr>
-    {% endif %}
+<h3 class="text-center">User profile</h3>
+<div class="container">
+<div class="jumbotron bg-light rounded mx-auto" style="width: 40%;">
+<div class="container mx-auto">   
+<p> </p>
+<img src="{% static 'img/default_avatar.jpg' %}" class="rounded-circle mx-auto d-block" alt=".." width="200" height="200"> 
+</div>
+<p> </p>
+<p class="text-center">{{user}}</p>
+
+{% for group in request.user.groups.all %}
+{% if group.name == 'referee' %}
+<p class="text-center text-warning">Referee</p>
+{% endif %}
 {% endfor %}
 
-<a href="{% url 'new-dog' %}">Add Dog</a>
+{% for group in request.user.groups.all %}
+{% if group.name == 'admin' %}
+<p class="text-center text-danger">Admin</p>
+{% endif %}
+{% endfor %}
+
+<hr class="mx-auto" style="width: 90%;">
+<p> </p>
+<p class="text-center">DOGS OWNED:</p>
+          {% for dog in dogs %}
+          {% if dog.owner == user %}
+          <p class="p-3 mb-2 bg-white text-dark text-center">{{dog.name}} - {{dog.race}} - <a href="{% url 'dog-profile' dog.id %}">Details</a> - <a href="{% url 'delete-dog' dog.id %}">Delete</a></p>
+          {% endif %}
+          {% endfor %}
+
+
+<a href="{% url 'new-dog' %}" class="btn btn-primary btn-center">Add Dog</a>
+
+
+</div>
+</div>
 
 
 {% endblock content %}

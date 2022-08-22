@@ -1,16 +1,47 @@
 {% extends 'main.html' %}
+{% load static %}
 
 {% block content %}
 
-<h3>Dog profile</h3>
+<style>
+    .info-table{
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      justify-self: center;
+    }
 
-<P>Avatar</P>
-<p>{{dog}}</p>
-<p>Bio</p>
-{{dog.id}} - {{dog.name}} - {{dog.owner}} - {{dog.race}} - {{dog.birthday}}
-<p>Posiadane tytuły:</p>
-        
-<hr>
+</style>
 
+<div class="p-2 bg-secondary bg-opacity-10 border border-secondary border-opacity-50 rounded mx-auto" style="width: 50%;">
+    <div class="card mx-auto" style="width: 90%;">
+        <img src="{% static 'img/dog_default.jpg' %}" class="card-img-top" alt="..." >
+        <div class="card-body">
+          <h5 class="card-title">{{dog.name}}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{dog.race}}</h6>
+
+
+          <hr>
+          <p></p>
+          <div class="info-table">
+          <p class="text-center text-muted">sex</p>
+          <p class="text-center text-muted">color</p>
+          <p class="text-center text-muted">age</p>
+          <p class="text-center text-dark">{{dog.sex}}</p>
+          <p class="text-center ">{{dog.color}}</p>
+          <p class="text-center text-dark">{{dog.birthday|timesince}}</p>
+          </div>
+            
+          <hr>
+
+          <p class="text-center">SHOWS</p>
+          {% for show in shows %}
+          {% if show.finished %}
+          <p class="p-3 mb-2 bg-light text-dark">{{show.name}} - <a href="{% url 'shows-details' show.id %}">Results</a></p>
+          {% else %}
+          <p class="p-3 mb-2 bg-light text-dark">{{show.name}} - <a href="{% url 'shows-details' show.id %}">See Details</a></p>
+          {% endif %}
+          {% endfor %}
+      </div>
+</div>
 
 {% endblock content %}

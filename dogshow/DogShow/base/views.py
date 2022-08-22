@@ -1,5 +1,4 @@
 
-import re
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
@@ -49,6 +48,7 @@ def showsDetails(request, pk):
         show.save()
 
     show_dogs = show.dogs.all()
+    show_dogs_number = show.dogs.count()
     dog_points = {}
     if show.finished:
         dog_names = []
@@ -68,7 +68,7 @@ def showsDetails(request, pk):
 
     page = 'shows-details'
     context = {
-        "page": page, "show": show, "show_dogs": show_dogs, "score_cards": score_cards, "all_finished": all_finished, "dog_points": dog_points,
+        "page": page, "show": show, "show_dogs": show_dogs, "score_cards": score_cards, "all_finished": all_finished, "dog_points": dog_points, "show_dogs_number": show_dogs_number,
     }
     return render(request, 'base/shows_details.html', context)
 
@@ -150,8 +150,9 @@ def deleteDog(request, pk):
 
 def dogProfile(request, pk):
     dog = Dog.objects.get(id=pk)
+    shows = list(Show.objects.filter(dogs = dog))
     context = {
-        "dog": dog
+        "dog": dog, "shows": shows,
         }
     return render(request, 'base/dog_profile.html', context)
 
@@ -299,8 +300,6 @@ def scorePage(request, pk, dpk):
             break
     score = scores.get(show=show, dog=dog, referee=request.user)
     
-
-
     if request.method == 'POST':
         if show.finished or not show.active:
             return redirect('shows')
@@ -316,4 +315,12 @@ def scorePage(request, pk, dpk):
         "show": show, "current_dog": current_dog, "score": score, "dogs_count": dogs_count, "dpk": dpk, "not_finished": not_finished,
     }
     return render(request, 'base/score_page.html', context)
+
+
+def refereeList(request):
+    referees = User.objects.all()
+    context = {
+        "referees": referees,
+    }
+    return render(request, 'base/referee_list.html', context)
 
