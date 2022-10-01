@@ -2,10 +2,11 @@
 
 {% block content %}
 <div class="p-2 bg-secondary bg-opacity-10 border border-secondary border-opacity-50 rounded mx-auto" style="width: 30%;">
-<form class="form" action="" method="POST">{% csrf_token %}
+<form class="form" action="" method="POST" enctype="multipart/form-data">{% csrf_token %}
     <p class="text-center">REGISTER</p>
     <p class="text-danger">{{message}}</p>
-    {{ form.as_p }}
+    {{ user_form.as_p }}
+    {{ profile_form.as_p }}
     <button type="submit" class="btn btn-primary">Submit</button>
     <hr>
     <p class="text-center">Have account already ?</p>

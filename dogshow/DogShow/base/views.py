@@ -5,7 +5,10 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from .models import Dog, Show, Score
-from .forms import DogForm, ShowForm
+from .forms import DogForm, ShowForm, ProfileForm
+import requests
+from django.core.files.base import ContentFile
+from django.core.files import File
 
 def home(request):
     shows = Show.objects.all()
@@ -99,17 +102,30 @@ def logoutUser(request):
 
 def registerUser(request):
     message = ''
-    form = UserCreationForm
+    user_form = UserCreationForm
+    profile_form = ProfileForm
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
+        user_form = UserCreationForm(request.POST, request.FILES)
+        profile_form = ProfileForm(request.POST, request.FILES)
+        if user_form.is_valid() and profile_form.is_valid():
+            user = user_form.save()
+            name = user.username
+
+            response = requests.get(f"https://avatars.dicebear.com/api/male/{name}.svg")
+            with open(f"static/img/avatar{name}.svg", "wb") as file:
+                file.write(response.content)
+            profile_form.instance.user_img = (f"img/avatar{name}.svg")
+            profile_form.instance.user = user
+            profile_form.save()
+            
             login(request, user)
             return redirect('home')
         else:
+            print(user_form.errors.as_data())
+            print(profile_form.errors.as_data())
             message = 'Something wnet wrong :/'
     context = {
-        "form": form, "message": message,
+        "user_form": user_form, "profile_form": profile_form, "message": message,
     }
     return render(request, 'base/register.html', context)
 
@@ -125,7 +141,7 @@ def newDog(request):
     message = ''
     form = DogForm
     if request.method == 'POST':
-        form = DogForm(request.POST)
+        form = DogForm(request.POST, request.FILES)
         if form.is_valid():
             dog = form.save(commit=False)
             dog.owner = request.user

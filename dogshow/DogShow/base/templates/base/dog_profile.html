@@ -14,7 +14,12 @@
 
 <div class="p-2 bg-secondary bg-opacity-10 border border-secondary border-opacity-50 rounded mx-auto" style="width: 50%;">
     <div class="card mx-auto" style="width: 90%;">
+        {% if dog.dog_img == 'img/dog_default.jpg' %}
         <img src="{% static 'img/dog_default.jpg' %}" class="card-img-top" alt="..." >
+        {% else %}
+        <img src="{{dog.dog_img.url}}" class="card-img-top" alt="..." >
+        {% endif %}
+        
         <div class="card-body">
           <h5 class="card-title">{{dog.name}}</h5>
           <h6 class="card-subtitle mb-2 text-muted">{{dog.race}}</h6>

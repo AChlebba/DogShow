@@ -2,6 +2,8 @@
 from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class Dog(models.Model):
     MALE = 'Male'
@@ -13,6 +15,7 @@ class Dog(models.Model):
     sex = models.CharField(max_length=6, choices=SEXES, default=MALE)
     color = models.CharField(max_length=100, default='color')
     birthday = models.DateField(null=True)
+    dog_img = models.ImageField(upload_to='static/img', default='img/dog_default.jpg')
 
     def __str__(self):
         return self.name
@@ -59,3 +62,9 @@ class Score(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone = models.IntegerField(default=000000000, blank=True)
+    user_img = models.ImageField(upload_to='static/img', default='img/default_avatar.jpg', blank=True)
