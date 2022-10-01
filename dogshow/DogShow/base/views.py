@@ -142,11 +142,9 @@ def deleteDog(request, pk):
     dog = Dog.objects.get(id=pk)
     if request.user == dog.owner:
         dog.delete()
-        page = 'user-profile'
-        dogs = Dog.objects.all()
         return redirect('user-profile')
     else:
-        message = 'jakas lipa wyszla'
+        return redirect('home')
 
 def dogProfile(request, pk):
     dog = Dog.objects.get(id=pk)
@@ -163,11 +161,12 @@ def submitDog(request, pk):
     if show.active or show.finished:
         return redirect('shows')
     show_dogs = show.dogs.all()
+
     if request.method == 'POST':
         try:
             dog = request.POST.get('selected-dog')
             show.dogs.add(dog)
-            return redirect('shows')
+            return redirect('shows-details', pk)
         except:
             message = 'Choose a dog'
 
@@ -182,7 +181,7 @@ def cancelDog(request, pk, dpk):
     
     if request.user == dog.owner:
         show.dogs.remove(dog)
-        return redirect('shows')
+        return redirect('shows-details', pk)
     else:
         message = 'jakas lipa wyszla'
 
@@ -224,7 +223,7 @@ def addReferee(request, pk, rpk):
                 if rpk == '3':
                     show.referee3 = None
                 show.save()
-                return redirect('shows')
+                return redirect('shows-details', pk)
             else:
                 referee = User.objects.get(id=referee)
                 if rpk == '1':
@@ -234,7 +233,7 @@ def addReferee(request, pk, rpk):
                 if rpk == '3':
                     show.referee3 = referee
                 show.save()
-                return redirect('shows')
+                return redirect('shows-details', pk)
         except:
             message = referee
 
@@ -245,44 +244,51 @@ def addReferee(request, pk, rpk):
 
 
 def activateShow(request, pk):
-    current_show = Show.objects.get(id=pk)
-    if current_show.active:
-        current_show.active = False
-        current_show.save()
+    if not request.user.groups.filter(name='admin').exists():
         return redirect('shows')
     else:
-        if current_show.finished:
-            return redirect('shows')
-        if Score.objects.filter(show=current_show).exists():
-            current_show.active = True
+        current_show = Show.objects.get(id=pk)
+        if current_show.active:
+            scores = Score.objects.all()
+            for score in scores:
+                if score.show == current_show:
+                    score.delete()
+            current_show.active = False
             current_show.save()
-            return redirect('shows')
+            return redirect('shows-details', pk)
         else:
-            for dog in current_show.dogs.all():
-                score = Score.objects.create(
-                    name = current_show.name + ' ' + current_show.referee1.username + ' ' + dog.name,
-                    show = current_show,
-                    referee = current_show.referee1,
-                    dog = dog)
-                score.save()
-            for dog in current_show.dogs.all():
-                score = Score.objects.create(
-                    name = current_show.name + ' ' + current_show.referee2.username + ' ' + dog.name,
-                    show = current_show,
-                    referee = current_show.referee2,
-                    dog = dog)
-                score.save()
-            for dog in current_show.dogs.all():
-                score = Score.objects.create(
-                    name = current_show.name + ' ' + current_show.referee3.username + ' ' + dog.name,
-                    show = current_show,
-                    referee = current_show.referee3,
-                    dog = dog)
-                score.save()
+            if current_show.finished:
+                return redirect('shows')
+            if Score.objects.filter(show=current_show).exists():
+                current_show.active = True
+                current_show.save()
+                return redirect('shows-details', pk)
+            else:
+                for dog in current_show.dogs.all():
+                    score = Score.objects.create(
+                        name = current_show.name + ' ' + current_show.referee1.username + ' ' + dog.name,
+                        show = current_show,
+                        referee = current_show.referee1,
+                        dog = dog)
+                    score.save()
+                for dog in current_show.dogs.all():
+                    score = Score.objects.create(
+                        name = current_show.name + ' ' + current_show.referee2.username + ' ' + dog.name,
+                        show = current_show,
+                        referee = current_show.referee2,
+                        dog = dog)
+                    score.save()
+                for dog in current_show.dogs.all():
+                    score = Score.objects.create(
+                        name = current_show.name + ' ' + current_show.referee3.username + ' ' + dog.name,
+                        show = current_show,
+                        referee = current_show.referee3,
+                        dog = dog)
+                    score.save()
 
-            current_show.active = True
-            current_show.save()
-            return redirect('shows')
+                current_show.active = True
+                current_show.save()
+                return redirect('shows-details', pk)
 
 
 def scorePage(request, pk, dpk):
@@ -298,6 +304,7 @@ def scorePage(request, pk, dpk):
         if i == int(dpk):
             current_dog = dog
             break
+    print(show, dog, request.user)
     score = scores.get(show=show, dog=dog, referee=request.user)
     
     if request.method == 'POST':
@@ -319,8 +326,34 @@ def scorePage(request, pk, dpk):
 
 def refereeList(request):
     referees = User.objects.all()
+    page = 'referees'
     context = {
-        "referees": referees,
+        "referees": referees, "page": page,
     }
     return render(request, 'base/referee_list.html', context)
+
+def refereeOnOff(request, pk):
+    if request.user.groups.filter(name='admin').exists():
+        referee = User.objects.get(id=pk)
+        group = Group.objects.get(name='referee')
+        if referee.groups.filter(name='referee').exists():
+            shows = Show.objects.all()
+            for show in shows:
+                if show.active or show.finished:
+                    continue
+                else:
+                    if show.referee1 == referee:
+                        show.referee1 = None
+                    if show.referee2 == referee:
+                        show.referee2 = None
+                    if show.referee3 == referee:
+                        show.referee3 = None
+                show.save()
+            referee.groups.remove(group)
+        else:
+            referee.groups.add(group)
+    else:
+        return redirect('shows')
+
+    return redirect('referee-list')
 

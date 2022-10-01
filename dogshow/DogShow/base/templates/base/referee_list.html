@@ -14,11 +14,6 @@
 {% for referee in referees %}
 <div>
      <p class="p-3 mb-2 bg-white text-dark rounded">{{referee.username}} - 
-        {% for group in referee.groups.all %}
-        {% if group.name == 'referee' %}
-        <a href="#" class="link-warning">Referee</a></p>
-        {% endif %}
-        {% endfor %}
 
         {% for group in referee.groups.all %}
         {% if group.name == 'admin' %}
@@ -26,8 +21,14 @@
         {% endif %}
         {% endfor %}
 
+        {% for group in referee.groups.all %}
+        {% if group.name == 'referee' %}
+        <a href="#" class="link-warning">Referee</a> - <a href="{% url 'referee-onoff' referee.id %}" class="link-secondary">Off</a></p>
+        {% endif %}
+        {% endfor %}
+
         {% if not referee.groups.all %}
-        <a href="#" >Just User</a></p>
+        <a href="#" >Just User</a> - <a href="{% url 'referee-onoff' referee.id %}" class="link-secondary">On</a></p>
         {% endif %}
 </div>
 {% endfor %}

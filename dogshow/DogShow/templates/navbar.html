@@ -30,6 +30,7 @@
         {% endif %}
         {% for group in request.user.groups.all %}
         {% if group.name == 'admin' %}
+
           {% if page == 'add_show' %}
             <li class="nav-item">
               <a class="nav-link active rounded" style="background-color: #f1f1f1;" aria-current="page" href="{% url 'add-show' %}">Add Show</a>
@@ -39,6 +40,17 @@
               <a class="nav-link" href="{% url 'add-show' %}">Add Show</a>
             </li>
           {% endif %}
+
+          {% if page == 'referees' %}
+            <li class="nav-item">
+              <a class="nav-link active rounded" style="background-color: #f1f1f1;" aria-current="page" href="{% url 'referee-list' %}">Add Show</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'referee-list' %}">Referees</a>
+            </li>
+          {% endif %}
+
         {% endif %}
         {% endfor%}
         </ul>
