@@ -1,8 +1,15 @@
 {% extends 'main.html' %}
+{% load static %}
 
 {% block content %}
 
 <style>
+
+    .dog-grid{
+      display: grid;
+      grid-template-columns: 2fr 1fr ;
+      justify-self: center;
+    }
     .score-table{
       display: grid;
       grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -19,13 +26,42 @@
       justify-self: center;
     }
 
+    .img-thumbnail {
+    width: 100%;
+    height: 30vw;
+    object-fit: contain;
+}
+
 </style>
 
 <div class="p-2 bg-secondary bg-opacity-10 border border-secondary border-opacity-50 rounded mx-auto" style="width: 70%;">
-{{current_dog.name}}
-{{current_dog.race}}
-{{current_dog.bithday}}
-{{not_finished}}
+<div class="dog-grid">
+  <div>
+    {% if dog.dog_img == 'img/dog_default.jpg' %}
+        <!-- <img src="{% static 'img/dog_default.jpg' %}" class="card-img-top" alt="..." > -->
+        <img src="{% static current_dog.dog_img %}" class="card-img-top" alt="..."  >
+        {% else %}
+        <img src="{{current_dog.dog_img.url}}" class="rounded img-thumbnail " alt="..." width="400" max-height="200" >
+        {% endif %}
+        <br>
+        <br>
+  </div>
+  <div>
+    <br>
+    <p class="text-center text-muted">name:</p>
+    <p class="text-center text-dark">{{current_dog.name}}</p>
+    <hr class="mx-auto" style="width:70%">
+    <p class="text-center text-muted">race:</p>
+    <p class="text-center text-dark">{{current_dog.race}}</p>
+    <hr class="mx-auto" style="width:70%">
+    <p class="text-center text-muted">sex:</p>
+    <p class="text-center text-dark">{{current_dog.sex}}</p>
+    <hr class="mx-auto" style="width:70%">
+    <p class="text-center text-muted">age:</p>
+    <p class="text-center text-dark">{{current_dog.birthday|timesince}}</p>
+  </div>
+  
+</div>
 <div class="score-table">
 <div class="p-2 bg-secondary bg-opacity-10 border border-secondary border-opacity-50 rounded mx-auto" style="width: 80%;">
 <form class="form" action="" method="POST">{% csrf_token %}

@@ -16,7 +16,9 @@
           <option value="---">---</option>
           {% for referee in referees %}
           {% if referee != show.referee1 and referee != show.referee2 and referee != show.referee3 %}
-          <option value="{{referee.id}}">{{referee.username}}</option>
+          {% if referee not in show.owners %}
+              <option value="{{referee.id}}">{{referee.username}}</option>
+          {% endif %}
           {% endif %}
           {% endfor %}
         </select>

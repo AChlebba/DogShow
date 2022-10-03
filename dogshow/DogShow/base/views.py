@@ -7,8 +7,6 @@ from django.contrib.auth import authenticate, login, logout
 from .models import Dog, Show, Score
 from .forms import DogForm, ShowForm, ProfileForm
 import requests
-from django.core.files.base import ContentFile
-from django.core.files import File
 
 def home(request):
     shows = Show.objects.all()
@@ -158,6 +156,8 @@ def deleteDog(request, pk):
     dog = Dog.objects.get(id=pk)
     if request.user == dog.owner:
         dog.delete()
+        scores = Score.objects.filter(dog=dog, submitted=False)
+        scores.delete()
         return redirect('user-profile')
     else:
         return redirect('home')
@@ -223,6 +223,7 @@ def addShow(request):
 
 def addReferee(request, pk, rpk):
     show = Show.objects.get(id=pk)
+    show_dogs = show.dogs.all()
     if show.active or show.finished:
         return redirect('shows')
     referees = Group.objects.get(name='referee').user_set.all()
@@ -254,7 +255,7 @@ def addReferee(request, pk, rpk):
             message = referee
 
     context = {
-        "referees": referees, "show": show, "message": message,
+        "referees": referees, "show": show, "show_dogs": show_dogs, "message": message,
     }
     return render(request, 'base/add_referee.html', context)
 

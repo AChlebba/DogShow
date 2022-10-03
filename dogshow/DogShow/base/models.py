@@ -2,8 +2,6 @@
 from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
 class Dog(models.Model):
     MALE = 'Male'
@@ -48,6 +46,14 @@ class Show(models.Model):
             return True
         else:
             return False
+
+    @property
+    def owners(self):
+        dogs = self.dogs.all()
+        owners = []
+        for dog in dogs:
+            owners.append(dog.owner)
+        return owners
 
 class Score(models.Model):
     name = models.CharField(max_length=200, blank=False)
