@@ -5,11 +5,6 @@
 <form class="form" action="" method="POST">{% csrf_token %}
     <p class="text-center">ADD REFEREE</p>
     <p class="text-danger">{{message}}</p>
-    
-    <!-- {% for referee in referees %}
-        {{referee}}
-    {% endfor %} -->
-
     <div class="input-group">
         <select class="custom-select" id="selected-referee" name="selected-referee">
           <option selected>Choose...</option>

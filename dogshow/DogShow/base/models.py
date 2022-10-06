@@ -31,7 +31,7 @@ class Show(models.Model):
     finished = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ['-date']
+        ordering = ['finished', '-date']
 
     def __str__(self):
         return self.name

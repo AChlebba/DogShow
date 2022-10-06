@@ -8,6 +8,7 @@ from .models import Dog, Show, Score
 from .forms import DogForm, ShowForm, ProfileForm
 import requests
 
+
 def home(request):
     shows = Show.objects.all()
     showw = Show.objects.get(id=1)
@@ -19,6 +20,7 @@ def home(request):
    
     return render(request, 'base/home.html', context)
 
+
 def shows(request):
     shows = Show.objects.all()
     page = 'shows'
@@ -26,6 +28,7 @@ def shows(request):
         "shows": shows, "page": page,
     }
     return render(request, 'base/shows.html', context)
+
 
 def showsDetails(request, pk):
     show = Show.objects.get(id=pk)
@@ -58,6 +61,8 @@ def showsDetails(request, pk):
                 dog_names.append([dog.name,0,0,0,0,0])
         dog_points = {item[0]: item[1:] for item in dog_names}
         for score in score_cards:
+            if score.dog == None:
+                continue
             dog_points[score.dog.name][0] += score.head
             dog_points[score.dog.name][1] += score.body
             dog_points[score.dog.name][2] += score.legs
@@ -72,6 +77,7 @@ def showsDetails(request, pk):
         "page": page, "show": show, "show_dogs": show_dogs, "score_cards": score_cards, "all_finished": all_finished, "dog_points": dog_points, "show_dogs_number": show_dogs_number,
     }
     return render(request, 'base/shows_details.html', context)
+
 
 def loginUser(request):
     page = 'login'
@@ -94,9 +100,11 @@ def loginUser(request):
     }
     return render(request, 'base/login.html', context)
 
+
 def logoutUser(request):
     logout(request)
     return redirect('home')
+
 
 def registerUser(request):
     message = ''
@@ -127,6 +135,8 @@ def registerUser(request):
     }
     return render(request, 'base/register.html', context)
 
+
+@login_required
 def userProfile(request):
     page = 'user-profile'
     dogs = Dog.objects.all()
@@ -135,6 +145,8 @@ def userProfile(request):
     }
     return render(request, 'base/user_profile.html', context)
 
+
+@login_required
 def newDog(request):
     message = ''
     form = DogForm
@@ -152,6 +164,8 @@ def newDog(request):
     }
     return render(request, 'base/new_dog.html', context)
 
+
+@login_required
 def deleteDog(request, pk):
     dog = Dog.objects.get(id=pk)
     if request.user == dog.owner:
@@ -162,6 +176,7 @@ def deleteDog(request, pk):
     else:
         return redirect('home')
 
+
 def dogProfile(request, pk):
     dog = Dog.objects.get(id=pk)
     shows = list(Show.objects.filter(dogs = dog))
@@ -170,6 +185,8 @@ def dogProfile(request, pk):
         }
     return render(request, 'base/dog_profile.html', context)
 
+
+@login_required
 def submitDog(request, pk):
     message = ''
     dogs = Dog.objects.all()
@@ -191,6 +208,8 @@ def submitDog(request, pk):
     }
     return render(request, 'base/submit_dog.html', context)
 
+
+@login_required
 def cancelDog(request, pk, dpk):
     dog = Dog.objects.get(id=dpk)
     show = Show.objects.get(id=pk)
@@ -202,7 +221,11 @@ def cancelDog(request, pk, dpk):
         message = 'jakas lipa wyszla'
 
 
+@login_required
 def addShow(request):
+    if not request.user.groups.filter(name='admin').exists():
+        return redirect('login')
+
     page = 'add_show'
     form = ShowForm
     message = ''
@@ -221,7 +244,11 @@ def addShow(request):
     return render(request, 'base/add_show.html', context)
 
 
+@login_required
 def addReferee(request, pk, rpk):
+    if not request.user.groups.filter(name='admin').exists():
+        return redirect('login')
+
     show = Show.objects.get(id=pk)
     show_dogs = show.dogs.all()
     if show.active or show.finished:
@@ -260,6 +287,7 @@ def addReferee(request, pk, rpk):
     return render(request, 'base/add_referee.html', context)
 
 
+@login_required
 def activateShow(request, pk):
     if not request.user.groups.filter(name='admin').exists():
         return redirect('shows')
@@ -308,7 +336,11 @@ def activateShow(request, pk):
                 return redirect('shows-details', pk)
 
 
+@login_required
 def scorePage(request, pk, dpk):
+    if not request.user.groups.filter(name='referee').exists():
+        return redirect('login')
+
     show = Show.objects.get(id=pk)
     dogs = show.dogs.all()
     scores = Score.objects.all()
@@ -341,7 +373,11 @@ def scorePage(request, pk, dpk):
     return render(request, 'base/score_page.html', context)
 
 
+@login_required
 def refereeList(request):
+    if not request.user.groups.filter(name='admin').exists():
+        return redirect('login')
+
     referees = User.objects.all()
     page = 'referees'
     context = {
@@ -349,6 +385,8 @@ def refereeList(request):
     }
     return render(request, 'base/referee_list.html', context)
 
+
+@login_required
 def refereeOnOff(request, pk):
     if request.user.groups.filter(name='admin').exists():
         referee = User.objects.get(id=pk)
