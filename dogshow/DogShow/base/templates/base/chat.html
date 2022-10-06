@@ -1,0 +1,57 @@
+{% extends 'main.html' %}
+{% block content %}
+
+
+<style>
+    .card{
+        overflow-y: initial;
+    }
+    .card-body{
+        height: 80vh;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column-reverse;
+        
+    }
+</style>
+
+
+
+<div class="container bg-light rounded" style="width: 50%;">
+    <br>
+    <div class="jumbotron bg-light rounded mx-auto" style="width: 95%;">
+        <h3 class="text-center">Chat</h3>
+
+        
+        <div class="card" id="chat2">
+            
+            <div class="card-body" data-mdb-perfect-scrollbar="true" style="position: relative; height: 400px">
+                
+                <div hx-get="/chat_refresh" hx-trigger="every 1s">
+
+                {% for message in messages %}
+                <div class="d-flex flex-row justify-content-start">
+                    <div> 
+                    <p class="fs-8">{{message.user}}</p>
+                    <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">{{message.text}}</p>
+                    <p class="small ms-3 mb-3 rounded-3 text-muted">{{message.created|timesince}} ago</p>
+                    </div>
+                </div>
+                {% endfor %}
+
+                </div>
+            </div>
+
+            <form class="form" action="" method="post">{% csrf_token %}
+                <div class="card-footer text-muted d-flex justify-content-start align-items-center p-3">
+                    <input type="text" class="form-control form-control-lg" id="newMessage" name="newMessage" placeholder="Type message...">
+                    <input type="submit" class="btn btn-lg" value="Send">
+                </div>
+            </form>
+            
+          </div>
+          <br>
+    </div>
+</div>
+
+{% endblock content %}

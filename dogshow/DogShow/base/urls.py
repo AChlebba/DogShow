@@ -20,4 +20,6 @@ urlpatterns = [
     path('score-page/<str:pk>/<str:dpk>', views.scorePage, name='score-page'),
     path('referees/', views.refereeList, name='referee-list'),
     path('referee-onoff/<str:pk>', views.refereeOnOff, name='referee-onoff'),
+    path('chat/', views.chat, name='chat'),
+    path('chat_refresh/', views.chatRefresh, name='chat-refresh'),
 ]

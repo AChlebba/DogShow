@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
-from .models import Dog, Show, Score
+from .models import Dog, Show, Score, Message
 from .forms import DogForm, ShowForm, ProfileForm
 import requests
 
@@ -411,4 +411,38 @@ def refereeOnOff(request, pk):
         return redirect('shows')
 
     return redirect('referee-list')
+
+
+def chat(request):
+    page = 'chat'
+    messages = Message.objects.all().order_by('created')
+    if request.method == 'POST':
+        if len(request.POST.get('newMessage').strip()) == 0:
+            return redirect('chat')
+        if len(request.POST.get('newMessage')) > 999:
+            return redirect('chat')
+        if request.user.is_authenticated:
+            message = Message.objects.create(
+                user = request.user.username,
+                text = request.POST.get('newMessage')
+            )
+        else:
+             message = Message.objects.create(
+                user = "Guest",
+                text = request.POST.get('newMessage')
+            )
+        message.save()
+        return redirect('chat')
+    context = {
+        "page": page, "messages": messages
+    }
+    return render(request, 'base/chat.html', context)
+
+def chatRefresh(request):
+    page = 'chat'
+    messages = Message.objects.all().order_by('created')
+    context = {
+        "page": page, "messages": messages
+    }
+    return render(request, 'base/chat_refresh.html', context)
 

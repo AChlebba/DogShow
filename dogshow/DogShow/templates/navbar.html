@@ -28,6 +28,15 @@
             <a class="nav-link" href="{% url 'shows' %}">Shows</a>
           </li>
         {% endif %}
+        {% if page == 'chat' %}
+          <li class="nav-item">
+            <a class="nav-link active rounded" style="background-color: #f1f1f1;" aria-current="page" href="{% url 'chat' %}">Chat</a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'chat' %}">Chat</a>
+          </li>
+        {% endif %}
         {% for group in request.user.groups.all %}
         {% if group.name == 'admin' %}
 

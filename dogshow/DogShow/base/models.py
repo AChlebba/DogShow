@@ -74,3 +74,11 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.IntegerField(default=000000000, blank=True)
     user_img = models.ImageField(upload_to='static/img', default='img/default_avatar.jpg', blank=True)
+
+class Message(models.Model):
+    user = models.TextField(blank=False, max_length=50, default='Guest')
+    text = models.TextField(blank=False, max_length=1000)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.text[0:50]
