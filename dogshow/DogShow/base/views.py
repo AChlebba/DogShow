@@ -6,6 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from .models import Dog, Show, Score, Message
 from .forms import DogForm, ShowForm, ProfileForm
+from django.http import HttpResponse
 import requests
 
 
@@ -432,11 +433,12 @@ def chat(request):
                 text = request.POST.get('newMessage')
             )
         message.save()
-        return redirect('chat')
+        return HttpResponse(status=204)
     context = {
         "page": page, "messages": messages
     }
     return render(request, 'base/chat.html', context)
+
 
 def chatRefresh(request):
     page = 'chat'
@@ -446,3 +448,10 @@ def chatRefresh(request):
     }
     return render(request, 'base/chat_refresh.html', context)
 
+
+def api(request):
+    page = 'api'
+    context = {
+        "page": page,
+    }
+    return render(request, 'base/api.html', context)
