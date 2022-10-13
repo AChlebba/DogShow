@@ -346,7 +346,7 @@ def scorePage(request, pk, dpk):
         if i == int(dpk):
             current_dog = dog
             break
-        
+
     score = scores.get(show=show, dog=dog, referee=request.user)
     
     if request.method == 'POST':
