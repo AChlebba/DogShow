@@ -28,6 +28,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = ['https://dogshow-production.up.railway.app', 'https://www.dogshow-production.up.railway.app']
 
 # Application definition
 
