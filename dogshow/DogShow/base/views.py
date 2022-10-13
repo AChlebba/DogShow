@@ -11,14 +11,10 @@ import requests
 
 
 def home(request):
-    shows = Show.objects.all()
-    showw = Show.objects.get(id=1)
-    show_dogs = showw.dogs.all()
-    dogs = Dog.objects.all()
-    scores = Score.objects.all()
     page = 'home'
-    context = {'shows': shows, 'dogs': dogs, 'scores': scores, 'show_dogs': show_dogs, 'page': page,}
-   
+    context = {
+        "page": page,
+        }
     return render(request, 'base/home.html', context)
 
 
@@ -71,8 +67,6 @@ def showsDetails(request, pk):
             dog_points[score.dog.name][4] += (score.head + score.body + score.legs + score.tail)
         dog_points = dict(sorted(dog_points.items(), key=lambda item: item[1][4], reverse=True))
     
-
-
     page = 'shows-details'
     context = {
         "page": page, "show": show, "show_dogs": show_dogs, "score_cards": score_cards, "all_finished": all_finished, "dog_points": dog_points, "show_dogs_number": show_dogs_number,
@@ -128,8 +122,6 @@ def registerUser(request):
             login(request, user)
             return redirect('home')
         else:
-            print(user_form.errors.as_data())
-            print(profile_form.errors.as_data())
             message = 'Something wnet wrong :/'
     context = {
         "user_form": user_form, "profile_form": profile_form, "message": message,
@@ -142,7 +134,7 @@ def userProfile(request):
     page = 'user-profile'
     dogs = Dog.objects.all()
     context = {
-        "page": page, "dogs":dogs,
+        "page": page, "dogs": dogs,
     }
     return render(request, 'base/user_profile.html', context)
 
@@ -219,7 +211,7 @@ def cancelDog(request, pk, dpk):
         show.dogs.remove(dog)
         return redirect('shows-details', pk)
     else:
-        message = 'jakas lipa wyszla'
+        return redirect('login')
 
 
 @login_required
@@ -354,7 +346,7 @@ def scorePage(request, pk, dpk):
         if i == int(dpk):
             current_dog = dog
             break
-    print(show, dog, request.user)
+        
     score = scores.get(show=show, dog=dog, referee=request.user)
     
     if request.method == 'POST':
