@@ -447,3 +447,13 @@ def api(request):
         "page": page,
     }
     return render(request, 'base/api.html', context)
+
+
+def dogs(request):
+    page = 'dogs'
+    response = requests.get("http://127.0.0.1:8000/api/dog-list/")
+    data = response.json()
+    context = {
+        "page": page, "data": data,
+    }
+    return render(request, 'base/dogs.html', context)

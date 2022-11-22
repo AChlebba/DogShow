@@ -1,0 +1,33 @@
+{% extends 'main.html '%}
+{% block content %}
+
+<style>
+    .dog-table{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+</style>
+<div class="container bg-light rounded" style="width: 50%;">
+    <br>
+<div class="dog-table">
+    {% for dog in data %}
+    <div>
+    <div class="card mx-auto" style="width: 18rem;">
+        <img src="{{dog.dog_img}}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">{{dog.name}}</h5>
+          <p class="card-text">Owner: {{dog.owner}}</p>
+          <p class="card-text">Race: {{dog.race}}</p>
+          <p class="card-text">Birthday: {{dog.birthday}}</p>
+        </div>
+      </div>
+    <br>
+    </div>
+    {% endfor %}
+
+</div>
+</div>
+
+
+{% endblock content %}

@@ -22,4 +22,5 @@ urlpatterns = [
     path('referee-onoff/<str:pk>', views.refereeOnOff, name='referee-onoff'),
     path('chat/', views.chat, name='chat'),
     path('chat_refresh/', views.chatRefresh, name='chat-refresh'),
+    path('dogs/', views.dogs, name='dogs'),
 ]
